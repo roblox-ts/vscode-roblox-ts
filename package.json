@@ -1,0 +1,87 @@
+{
+	"name": "roblox-ts",
+	"displayName": "roblox-ts Extensions",
+	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.52.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"main": "./out/extension.js",
+	"activationEvents": [
+		"workspaceContains:tsconfig.json",
+		"workspaceContains:include"
+	],
+	"contributes": {
+		"typescriptServerPlugins": [
+			{
+				"name": "roblox-ts-extensions",
+				"enableForWorkspaceTypeScriptVersions": true
+			}
+		],
+		"configuration": {
+			"title": "roblox-ts",
+			"properties": {
+				"roblox-ts.boundary.useRojo": {
+					"type": "boolean",
+					"default": false,
+					"description": "Use rojo to determine client/server paths."
+				},
+				"roblox-ts.boundary.mode": {
+					"type": "string",
+					"default": "remove",
+					"enum": [
+						"remove",
+						"prefix"
+					],
+					"enumDescriptions": [
+						"Remove cross-boundary imports from intellisense.",
+						"Prefix cross-boundary imports with their boundary."
+					]
+				},
+				"roblox-ts.boundary.paths.clientPaths": {
+					"type": "array",
+					"default": [],
+					"items": {
+						"type": "string"
+					},
+					"description": "The paths to be treated as client-sided directories. Overrides rojo if enabled."
+				},
+				"roblox-ts.boundary.paths.serverPaths": {
+					"type": "array",
+					"default": [],
+					"items": {
+						"type": "string"
+					},
+					"description": "The paths to be treated as server-sided directories. Overrides rojo if enabled."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.52.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.15.0",
+		"@typescript-eslint/eslint-plugin": "^4.9.0",
+		"@typescript-eslint/parser": "^4.9.0",
+		"glob": "^7.1.6",
+		"mocha": "^8.1.3",
+		"typescript": "^4.1.2",
+		"vscode-test": "^1.4.1"
+	},
+	"dependencies": {
+		"roblox-ts-extensions": "*"
+	}
+}
