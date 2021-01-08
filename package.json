@@ -1,9 +1,9 @@
 {
 	"name": "vscode-roblox-ts",
 	"publisher": "Roblox-TS",
-	"displayName": "roblox-ts Extensions",
+	"displayName": "roblox-ts",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.52.0"
