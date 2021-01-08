@@ -1,5 +1,6 @@
 {
 	"name": "vscode-roblox-ts",
+	"publisher": "Roblox-TS",
 	"displayName": "roblox-ts Extensions",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
 	"version": "0.0.1",
@@ -9,6 +10,10 @@
 	"categories": [
 		"Other"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/roblox-ts/roblox-ts-extensions"
+	},
 	"main": "./out/extension.js",
 	"activationEvents": [
 		"workspaceContains:tsconfig.json",
