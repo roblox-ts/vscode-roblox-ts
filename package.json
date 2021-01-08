@@ -3,7 +3,8 @@
 	"publisher": "Roblox-TS",
 	"displayName": "roblox-ts Extensions",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
-	"version": "0.0.1",
+	"version": "0.0.2",
+	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.52.0"
 	},
@@ -31,7 +32,7 @@
 			"properties": {
 				"roblox-ts.boundary.useRojo": {
 					"type": "boolean",
-					"default": false,
+					"default": true,
 					"description": "Use rojo to determine client/server paths."
 				},
 				"roblox-ts.boundary.mode": {
