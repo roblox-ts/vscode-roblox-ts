@@ -17,8 +17,7 @@
 	},
 	"main": "./out/extension.js",
 	"activationEvents": [
-		"workspaceContains:tsconfig.json",
-		"workspaceContains:include"
+		"workspaceContains:node_modules/@rbxts/compiler-types"
 	],
 	"contributes": {
 		"typescriptServerPlugins": [
@@ -88,6 +87,6 @@
 		"vscode-test": "^1.4.1"
 	},
 	"dependencies": {
-		"roblox-ts-extensions": "^1.1.4"
+		"roblox-ts-extensions": "^1.1.6"
 	}
 }
