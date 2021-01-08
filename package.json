@@ -1,5 +1,5 @@
 {
-	"name": "roblox-ts",
+	"name": "vscode-roblox-ts",
 	"displayName": "roblox-ts Extensions",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
 	"version": "0.0.1",
