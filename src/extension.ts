@@ -22,10 +22,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	configurePlugin(api);
 
 	vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration("roblox-ts") || e.affectsConfiguration("roblox-ts.boundary")) {
+        if (e.affectsConfiguration("roblox-ts")) {
             configurePlugin(api);
         }
-    }, undefined, context.subscriptions);
+	}, undefined, context.subscriptions);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
