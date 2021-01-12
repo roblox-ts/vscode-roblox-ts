@@ -14,6 +14,10 @@ None currently
 
 Users appreciate release notes as you update your extension.
 
+### 0.0.8
+
+Errors caused by roblox-ts-extensions will no longer crash features such as intellisense.
+
 ### 0.0.1
 
 Initial alpha release of vscode-roblox-ts
