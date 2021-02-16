@@ -29,7 +29,8 @@
 		"commands": [
 			{
 				"command": "roblox-ts.openOutput",
-				"title": "roblox-ts: Open Output Path"
+				"title": "Open Output Path",
+				"category": "roblox-ts"
 			}
 		],
 		"menus": {
