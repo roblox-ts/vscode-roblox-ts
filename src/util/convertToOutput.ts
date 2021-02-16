@@ -20,5 +20,5 @@ export function convertToOutput(srcDir: string, outDir: string, basePath: string
 
 	const segmentedPath = segments.join(".");
 	const baseName = isTs && segmentedPath === "index" ? "init" : segmentedPath;
-	return path.join(outDir, path.join(parsedPath.dir, isTs ? baseName + ".lua" : baseName));
+	return path.join(outDir, path.join(parsedPath.dir, isTs ? baseName + ".lua" : baseName + parsedPath.ext));
 }
