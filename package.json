@@ -3,7 +3,7 @@
 	"publisher": "Roblox-TS",
 	"displayName": "roblox-ts",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.52.0"
@@ -44,6 +44,11 @@
 		"configuration": {
 			"title": "roblox-ts",
 			"properties": {
+				"roblox-ts.editor.hideDeprecated": {
+					"type": "boolean",
+					"default": true,
+					"description": "Hide deprecated members from intellisense."
+				},
 				"roblox-ts.boundary.useRojo": {
 					"type": "boolean",
 					"default": true,
@@ -101,7 +106,7 @@
 		"vscode-test": "^1.4.1"
 	},
 	"dependencies": {
-		"roblox-ts-extensions": "^1.2.0",
+		"roblox-ts-extensions": "^1.4.0",
 		"typescript": "^4.1.5"
 	}
 }

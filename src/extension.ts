@@ -69,6 +69,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function configurePlugin(api: any) {
+	const editor = vscode.workspace.getConfiguration("roblox-ts.editor");
 	const boundary = vscode.workspace.getConfiguration("roblox-ts.boundary");
 	const paths = vscode.workspace.getConfiguration("roblox-ts.boundary.paths");
 
@@ -77,7 +78,8 @@ export function configurePlugin(api: any) {
 		mode: boundary.get("mode"),
 		useRojo: boundary.get("useRojo"),
 		server: paths.get("serverPaths"),
-		client: paths.get("clientPaths")
+		client: paths.get("clientPaths"),
+		hideDeprecated: editor.get("hideDeprecated")
 	});
 }
 
