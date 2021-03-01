@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import * as path from "path";
 import { existsSync } from 'fs';
 import { getCompilerOptionsAtFile } from './util/compilerOptions';
-import { convertToOutput } from './util/convertToOutput';
 import { isPathInSrc } from './util/isPathInSrc';
 import { showErrorMessage } from './util/showMessage';
+import { PathTranslator } from './util/PathTranslator';
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Retrieve a reference to vscode's typescript extension.
@@ -54,7 +54,14 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		if (!isPathInSrc(currentFile, result)) return showErrorMessage("File not in srcDir");
 
-		const outputPath = convertToOutput(compilerOptions.rootDir, compilerOptions.outDir, path.dirname(tsconfigPath), currentFile);
+		const basePath = path.dirname(tsconfigPath);
+		const pathTranslator = new PathTranslator(
+			path.join(basePath, compilerOptions.rootDir),
+			path.join(basePath, compilerOptions.outDir),
+			undefined,
+			true
+		);
+		const outputPath = pathTranslator.getOutputPath(currentFile);
 		if (!existsSync(outputPath)) return showErrorMessage("Output file could not be found");
 
 		vscode.workspace.openTextDocument(vscode.Uri.file(outputPath))
