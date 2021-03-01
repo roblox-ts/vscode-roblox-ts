@@ -14,6 +14,9 @@ None currently
 
 ## Release Notes
 
+### 0.2.1
+- Open Output should now work on most files.
+
 ### 0.2.0
 - Added setting to remove deprecated members from intellisense (enabled by default.)
 - Property declarations with the @hidden JSDoc tag are removed from intellisense.
