@@ -4,6 +4,7 @@
 
 - Remove or prefix cross-boundary imports in intellisense.
 - Warn about non-type only cross-boundary imports.
+- Specify network boundaries in packages.
 - Remove internal fields from roblox-ts types.
 - Remove deprecated entries from intellisense.
 - Remove @hidden entries from intellisense.
@@ -13,6 +14,11 @@
 None currently
 
 ## Release Notes
+
+### 0.3.0
+- Added the @server, @client and @shared tsdoc tags.
+- Clarified nominal non-assignable diagnostic in some cases.
+- Performance improvements and optimizations.
 
 ### 0.2.1
 - Open Output should now work on most files.
