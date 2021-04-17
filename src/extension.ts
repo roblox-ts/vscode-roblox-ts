@@ -91,9 +91,17 @@ export async function activate(context: vscode.ExtensionContext) {
 		outputChannel.appendLine("Starting compiler..");
 		outputChannel.show();
 
-		compilerProcess = childProcess.spawn("rbxtsc.cmd", vscode.workspace.getConfiguration("roblox-ts.command").get<Array<string>>("parameters")!, {
-			cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString()
-		});
+		if (vscode.workspace.getConfiguration("roblox-ts.command").get<boolean>("useNpx")) {
+			compilerProcess = childProcess.spawn('npx', ["rbxtsc", ...vscode.workspace.getConfiguration("roblox-ts.command").get<Array<string>>("parameters")!], {
+				cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString(),
+				shell: true
+			});
+		} else {
+			compilerProcess = childProcess.spawn('rbxtsc', vscode.workspace.getConfiguration("roblox-ts.command").get<Array<string>>("parameters")!, {
+				cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString(),
+				shell: true
+			});
+		}
 
 		compilerProcess.on("error", error => {
 			const errorMessage = `Error while starting compiler: ${error.message}`;
