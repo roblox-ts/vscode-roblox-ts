@@ -103,7 +103,12 @@
 				"roblox-ts.command.useNpx": {
 					"type": "boolean",
 					"default": true,
-					"description": "Whether to use npx to spawn roblox-ts. This allows you to use local installations"
+					"description": "Whether to use npx to spawn roblox-ts. This allows you to use local installations."
+				},
+				"roblox-ts.command.development": {
+					"type": "boolean",
+					"default": false,
+					"description": "If enabled, this will use rbxtsc-dev instead of rbxtsc."
 				}
 			}
 		}

@@ -98,10 +98,12 @@ export async function activate(context: vscode.ExtensionContext) {
 			shell: true
 		};
 
+		const compilerCommand = commandConfiguration.get("development", false) ? "rbxtsc-dev" : "rbxtsc";
+
 		if (commandConfiguration.get<boolean>("useNpx", true)) {
-			compilerProcess = childProcess.spawn('npx', ["rbxtsc", ...parameters], options);
+			compilerProcess = childProcess.spawn("npx", [compilerCommand, ...parameters], options);
 		} else {
-			compilerProcess = childProcess.spawn('rbxtsc', parameters, options);
+			compilerProcess = childProcess.spawn(compilerCommand, parameters, options);
 		}
 
 		compilerProcess.on("error", error => {
