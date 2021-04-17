@@ -112,7 +112,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		compilerProcess.stdout.on("data", chunk => outputChannel.append(chunk.toString()));
 
 		compilerProcess.on("exit", exitCode => {
-			if (exitCode !== 0) {
+			if (exitCode) {
 				vscode.window.showErrorMessage("Compiler did not exit successfully.", "Show Output").then(choice => {
 					if (!choice) return;
 
