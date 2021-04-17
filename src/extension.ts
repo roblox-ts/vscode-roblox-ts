@@ -77,13 +77,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	const statusBarDefaultState = ()=> {
-		statusBarItem.text = "$(debug-start) Start rbx-ts";
+		statusBarItem.text = "$(debug-start) roblox-ts";
 		statusBarItem.command = "roblox-ts.start";
 	}
 
 	let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
 	const startCompiler = async() => {
-		statusBarItem.text = "$(debug-stop) Stop rbx-ts";
+		statusBarItem.text = "$(debug-stop) roblox-ts";
 		statusBarItem.command = "roblox-ts.stop";
 
 		if (!vscode.workspace.workspaceFolders) return showErrorMessage("Not in a workspace");
