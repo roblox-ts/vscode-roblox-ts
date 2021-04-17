@@ -100,13 +100,14 @@ export async function activate(context: vscode.ExtensionContext) {
 			shell: true
 		};
 
-		const compilerCommand = commandConfiguration.get("development", false) ? "rbxtsc-dev" : "rbxtsc";
+		const development = commandConfiguration.get("development", false);
+		const compilerCommand = development ? "rbxtsc-dev" : "rbxtsc";
 
 		// Detect if there is a local install
 		const localInstall = path.join(workspacePath, "node_modules", ".bin", "rbxtsc");
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
-		if (fs.existsSync(localInstall)) {
+		if (!development && fs.existsSync(localInstall)) {
 			outputChannel.appendLine("Detected local install, using local install instead of global");
 			compilerProcess = childProcess.spawn(localInstall, parameters, options);
 		} else {
