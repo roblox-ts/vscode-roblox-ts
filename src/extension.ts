@@ -140,7 +140,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const stopCompiler = async() => {
 		outputChannel.appendLine("Stopping compiler..");
-		compilerProcess.kill("SIGTERM");
+		compilerProcess.kill("SIGINT");
 	};
 
 	// Register commands.
