@@ -100,6 +100,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		const compilerCommand = commandConfiguration.get("development", false) ? "rbxtsc-dev" : "rbxtsc";
 
+		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
 		if (commandConfiguration.get<boolean>("useNpx", true)) {
 			compilerProcess = childProcess.spawn("npx", [compilerCommand, ...parameters], options);
 		} else {
@@ -115,6 +116,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		compilerProcess.stdout.on("data", chunk => outputChannel.append(chunk.toString()));
 
 		compilerProcess.on("exit", exitCode => {
+			vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
+
 			if (exitCode) {
 				vscode.window.showErrorMessage("Compiler did not exit successfully.", "Show Output").then(choice => {
 					if (!choice) return;
@@ -145,6 +148,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	statusBarItem.show();
 
 	vscode.commands.executeCommand('setContext', 'roblox-ts:inSrcDir', vscode.window.activeTextEditor?.document.uri.fsPath ?? false);
+	vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
 
 	console.log('roblox-ts extensions has loaded');
 }

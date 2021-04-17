@@ -48,6 +48,14 @@
 				{
 					"command": "roblox-ts.openOutput",
 					"when": "roblox-ts:inSrcDir"
+				},
+				{
+					"command": "roblox-ts.start",
+					"when": "!roblox-ts:compilerActive"
+				},
+				{
+					"command": "roblox-ts.stop",
+					"when": "roblox-ts:compilerActive"
 				}
 			]
 		},
