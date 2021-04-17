@@ -138,6 +138,7 @@
 	},
 	"dependencies": {
 		"roblox-ts-extensions": "^1.5.0",
+		"tree-kill": "^1.2.2",
 		"typescript": "^4.1.5"
 	}
 }

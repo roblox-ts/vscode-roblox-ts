@@ -2,6 +2,7 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { existsSync } from 'fs';
 import * as path from "path";
+import * as treeKill from 'tree-kill';
 import * as vscode from 'vscode';
 import { getCompilerOptionsAtFile } from './util/compilerOptions';
 import { isPathInSrc } from './util/isPathInSrc';
@@ -83,6 +84,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	};
 
 	let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
+	let compilerPendingExit = false;
 	const startCompiler = async() => {
 		statusBarItem.text = "$(debug-stop) roblox-ts";
 		statusBarItem.command = "roblox-ts.stop";
@@ -125,13 +127,15 @@ export async function activate(context: vscode.ExtensionContext) {
 		compilerProcess.on("exit", exitCode => {
 			vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
 
-			if (exitCode) {
+			if (exitCode && !compilerPendingExit) {
 				vscode.window.showErrorMessage("Compiler did not exit successfully.", "Show Output").then(choice => {
 					if (!choice) return;
 
 					outputChannel.show();
 				});
 			}
+
+			compilerPendingExit = false;
 
 			outputChannel.appendLine(`Compiler exited with code ${exitCode ?? 0}`);
 			statusBarDefaultState();
@@ -140,7 +144,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const stopCompiler = async() => {
 		outputChannel.appendLine("Stopping compiler..");
-		compilerProcess.kill("SIGINT");
+		compilerPendingExit = true;
+
+		treeKill(compilerProcess.pid);
 	};
 
 	// Register commands.
