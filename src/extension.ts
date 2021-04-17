@@ -1,11 +1,11 @@
-import * as vscode from 'vscode';
-import * as path from "path";
 import * as childProcess from 'child_process';
 import { existsSync } from 'fs';
+import * as path from "path";
+import * as vscode from 'vscode';
 import { getCompilerOptionsAtFile } from './util/compilerOptions';
 import { isPathInSrc } from './util/isPathInSrc';
-import { showErrorMessage } from './util/showMessage';
 import { PathTranslator } from './util/PathTranslator';
+import { showErrorMessage } from './util/showMessage';
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Retrieve a reference to vscode's typescript extension.
@@ -90,8 +90,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		outputChannel.appendLine("Starting compiler..");
 		outputChannel.show();
-
-		outputChannel.appendLine(vscode.workspace.workspaceFolders[0].uri.fsPath.toString());
 
 		compilerProcess = childProcess.spawn("rbxtsc.cmd", vscode.workspace.getConfiguration("roblox-ts.command").get<Array<string>>("parameters")!, {
 			cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString()
