@@ -108,11 +108,6 @@
 					},
 					"description": "The parameters to be passed into the command triggered from the status bar."
 				},
-				"roblox-ts.command.useNpx": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether to use npx to spawn roblox-ts. This allows you to use local installations."
-				},
 				"roblox-ts.command.development": {
 					"type": "boolean",
 					"default": false,

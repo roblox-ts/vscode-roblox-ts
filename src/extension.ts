@@ -1,4 +1,5 @@
 import * as childProcess from 'child_process';
+import * as fs from 'fs';
 import { existsSync } from 'fs';
 import * as path from "path";
 import * as vscode from 'vscode';
@@ -93,16 +94,21 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		const commandConfiguration = vscode.workspace.getConfiguration("roblox-ts.command");
 		const parameters = commandConfiguration.get<Array<string>>("parameters", ["-w"]);
+		const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
 		const options = {
-			cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString(),
+			cwd: workspacePath.toString(),
 			shell: true
 		};
 
 		const compilerCommand = commandConfiguration.get("development", false) ? "rbxtsc-dev" : "rbxtsc";
 
+		// Detect if there is a local install
+		const localInstall = path.join(workspacePath, "node_modules", ".bin", "rbxtsc");
+
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
-		if (commandConfiguration.get<boolean>("useNpx", true)) {
-			compilerProcess = childProcess.spawn("npx", [compilerCommand, ...parameters], options);
+		if (fs.existsSync(localInstall)) {
+			outputChannel.appendLine("Detected local install, using local install instead of global");
+			compilerProcess = childProcess.spawn(localInstall, parameters, options);
 		} else {
 			compilerProcess = childProcess.spawn(compilerCommand, parameters, options);
 		}
