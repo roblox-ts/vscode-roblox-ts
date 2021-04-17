@@ -77,10 +77,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		500
 	);
 
-	const statusBarDefaultState = ()=> {
+	const statusBarDefaultState = () => {
 		statusBarItem.text = "$(debug-start) roblox-ts";
 		statusBarItem.command = "roblox-ts.start";
-	}
+	};
 
 	let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
 	const startCompiler = async() => {
@@ -140,7 +140,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const stopCompiler = async() => {
 		outputChannel.appendLine("Stopping compiler..");
 		compilerProcess.kill("SIGTERM");
-	}
+	};
 
 	// Register commands.
 	context.subscriptions.push(vscode.commands.registerCommand("roblox-ts.openOutput", openOutput));
