@@ -91,16 +91,17 @@ export async function activate(context: vscode.ExtensionContext) {
 		outputChannel.appendLine("Starting compiler..");
 		outputChannel.show();
 
-		if (vscode.workspace.getConfiguration("roblox-ts.command").get<boolean>("useNpx")) {
-			compilerProcess = childProcess.spawn('npx', ["rbxtsc", ...vscode.workspace.getConfiguration("roblox-ts.command").get<Array<string>>("parameters")!], {
-				cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString(),
-				shell: true
-			});
+		const commandConfiguration = vscode.workspace.getConfiguration("roblox-ts.command");
+		const parameters = commandConfiguration.get<Array<string>>("parameters", ["-w"]);
+		const options = {
+			cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString(),
+			shell: true
+		};
+
+		if (commandConfiguration.get<boolean>("useNpx", true)) {
+			compilerProcess = childProcess.spawn('npx', ["rbxtsc", ...parameters], options);
 		} else {
-			compilerProcess = childProcess.spawn('rbxtsc', vscode.workspace.getConfiguration("roblox-ts.command").get<Array<string>>("parameters")!, {
-				cwd: vscode.workspace.workspaceFolders[0].uri.fsPath.toString(),
-				shell: true
-			});
+			compilerProcess = childProcess.spawn('rbxtsc', parameters, options);
 		}
 
 		compilerProcess.on("error", error => {
@@ -120,7 +121,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				});
 			}
 
-			outputChannel.appendLine(`Compiler exited with code ${exitCode}`);
+			outputChannel.appendLine(`Compiler exited with code ${exitCode ?? 0}`);
 			statusBarDefaultState();
 		});
 	};
