@@ -16,6 +16,9 @@ None currently
 
 ## Release Notes
 
+### 1.0.1
+- Output terminal no longer opens by default.
+
 ### 1.0.0
 - Added status bar button to compile your project.
 	- Thanks to [@xethlyz](https://github.com/xethlyx)
