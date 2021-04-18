@@ -8,6 +8,7 @@ import { getCompilerOptionsAtFile } from './util/compilerOptions';
 import { isPathInSrc } from './util/isPathInSrc';
 import { PathTranslator } from './util/PathTranslator';
 import { showErrorMessage } from './util/showMessage';
+import { VirtualTerminal } from './VirtualTerminal';
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Retrieve a reference to vscode's typescript extension.
@@ -71,7 +72,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			.then(document => vscode.window.showTextDocument(document));
 	};
 
-	const outputChannel = vscode.window.createOutputChannel("Roblox TS");
+	const outputChannel = new VirtualTerminal("Roblox TS");
 
 	const statusBarItem = vscode.window.createStatusBarItem(
 		vscode.StatusBarAlignment.Right,
@@ -148,6 +149,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		treeKill(compilerProcess.pid);
 	};
+
+	outputChannel.onClose(() => {
+		if (statusBarItem.command === "roblox-ts.stop") {
+			stopCompiler();
+		}
+	});
 
 	// Register commands.
 	context.subscriptions.push(vscode.commands.registerCommand("roblox-ts.openOutput", openOutput));
