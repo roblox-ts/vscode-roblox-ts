@@ -5,6 +5,7 @@
 - Remove or prefix cross-boundary imports in intellisense.
 - Warn about non-type only cross-boundary imports.
 - Specify network boundaries in packages.
+- Status bar button to compile your project.
 - Remove internal fields from roblox-ts types.
 - Remove deprecated entries from intellisense.
 - Remove @hidden entries from intellisense.
@@ -14,6 +15,10 @@
 None currently
 
 ## Release Notes
+
+### 1.0.0
+- Added status bar button to compile your project.
+	- Thanks to [@xethlyz](https://github.com/xethlyx)
 
 ### 0.3.0
 - Added the @server, @client and @shared tsdoc tags.
