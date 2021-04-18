@@ -31,6 +31,16 @@
 				"command": "roblox-ts.openOutput",
 				"title": "Open Output Path",
 				"category": "roblox-ts"
+			},
+			{
+				"command": "roblox-ts.start",
+				"title": "Start Compiler",
+				"category": "roblox-ts"
+			},
+			{
+				"command": "roblox-ts.stop",
+				"title": "Stop Compiler",
+				"category": "roblox-ts"
 			}
 		],
 		"menus": {
@@ -38,6 +48,14 @@
 				{
 					"command": "roblox-ts.openOutput",
 					"when": "roblox-ts:inSrcDir"
+				},
+				{
+					"command": "roblox-ts.start",
+					"when": "!roblox-ts:compilerActive"
+				},
+				{
+					"command": "roblox-ts.stop",
+					"when": "roblox-ts:compilerActive"
 				}
 			]
 		},
@@ -81,6 +99,19 @@
 						"type": "string"
 					},
 					"description": "The paths to be treated as server-sided directories. Overrides rojo if enabled."
+				},
+				"roblox-ts.command.parameters": {
+					"type": "array",
+					"default": ["-w"],
+					"items": {
+						"type": "string"
+					},
+					"description": "The parameters to be passed into the command triggered from the status bar."
+				},
+				"roblox-ts.command.development": {
+					"type": "boolean",
+					"default": false,
+					"description": "If enabled, this will use rbxtsc-dev instead of rbxtsc."
 				}
 			}
 		}
@@ -107,6 +138,7 @@
 	},
 	"dependencies": {
 		"roblox-ts-extensions": "^1.5.0",
+		"tree-kill": "^1.2.2",
 		"typescript": "^4.1.5"
 	}
 }
