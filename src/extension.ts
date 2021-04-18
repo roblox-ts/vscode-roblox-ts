@@ -92,8 +92,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		if (!vscode.workspace.workspaceFolders) return showErrorMessage("Not in a workspace");
 
-		outputChannel.appendLine("Starting compiler..");
 		outputChannel.show();
+		outputChannel.appendLine("Starting compiler..");
 
 		const commandConfiguration = vscode.workspace.getConfiguration("roblox-ts.command");
 		const parameters = commandConfiguration.get<Array<string>>("parameters", ["-w"]);
