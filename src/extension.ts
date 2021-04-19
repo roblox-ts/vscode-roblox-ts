@@ -34,6 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidChangeConfiguration((e) => {
 		if (e.affectsConfiguration("roblox-ts")) {
 			configurePlugin(api);
+			updateStatusButtonVisibility();
 		}
 	}, undefined, context.subscriptions);
 
@@ -82,6 +83,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	const statusBarDefaultState = () => {
 		statusBarItem.text = "$(debug-start) roblox-ts";
 		statusBarItem.command = "roblox-ts.start";
+	};
+
+	const updateStatusButtonVisibility = () => {
+		if (vscode.workspace.getConfiguration('roblox-ts.command.status').get('show', true)) {
+			statusBarItem.show();
+		} else {
+			statusBarItem.hide();
+		}
 	};
 
 	let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
@@ -165,7 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(outputChannel);
 
 	statusBarDefaultState();
-	statusBarItem.show();
+	updateStatusButtonVisibility();
 
 	vscode.commands.executeCommand('setContext', 'roblox-ts:inSrcDir', vscode.window.activeTextEditor?.document.uri.fsPath ?? false);
 	vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
