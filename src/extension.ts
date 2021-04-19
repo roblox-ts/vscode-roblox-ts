@@ -91,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		} else {
 			statusBarItem.hide();
 		}
-	}
+	};
 
 	let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
 	let compilerPendingExit = false;
