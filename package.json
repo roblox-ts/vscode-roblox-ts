@@ -100,6 +100,11 @@
 					},
 					"description": "The paths to be treated as server-sided directories. Overrides rojo if enabled."
 				},
+				"roblox-ts.status.show": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether to show the status button."
+				},
 				"roblox-ts.command.parameters": {
 					"type": "array",
 					"default": ["-w"],
