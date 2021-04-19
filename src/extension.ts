@@ -86,7 +86,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	};
 
 	const updateStatusButtonVisibility = () => {
-		if (vscode.workspace.getConfiguration('roblox-ts.status').get('show', true)) {
+		if (vscode.workspace.getConfiguration('roblox-ts.command.status').get('show', true)) {
 			statusBarItem.show();
 		} else {
 			statusBarItem.hide();
