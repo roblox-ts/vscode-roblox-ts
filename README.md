@@ -16,6 +16,10 @@ None currently
 
 ## Release Notes
 
+### 1.1.0
+- Added config option to hide the status bar button.
+	- Thanks to [@xethlyz](https://github.com/xethlyx)
+
 ### 1.0.1
 - Output terminal no longer opens by default.
 
