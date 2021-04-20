@@ -16,6 +16,9 @@ None currently
 
 ## Release Notes
 
+### 1.1.1
+- Fixed roblox-ts casing
+
 ### 1.1.0
 - Added config option to hide the status bar button.
 	- Thanks to [@xethlyz](https://github.com/xethlyx)
