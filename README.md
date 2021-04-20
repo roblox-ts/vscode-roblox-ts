@@ -16,6 +16,9 @@ None currently
 
 ## Release Notes
 
+### 1.1.2
+- Fixed issue with output that caused text to overlap.
+
 ### 1.1.1
 - Fixed roblox-ts casing
 
