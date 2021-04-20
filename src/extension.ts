@@ -73,7 +73,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			.then(document => vscode.window.showTextDocument(document));
 	};
 
-	const outputChannel = new VirtualTerminal("Roblox TS");
+	const outputChannel = new VirtualTerminal("roblox-ts");
 
 	const statusBarItem = vscode.window.createStatusBarItem(
 		vscode.StatusBarAlignment.Right,
