@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import * as path from "path";
 import * as treeKill from 'tree-kill';
 import * as vscode from 'vscode';
+import { makeColorProvider } from './colorizePrint';
 import { getCompilerOptionsAtFile } from './util/compilerOptions';
 import { isPathInSrc } from './util/isPathInSrc';
 import { PathTranslator } from './util/PathTranslator';
@@ -172,6 +173,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(statusBarItem);
 	context.subscriptions.push(outputChannel);
+
+	const colorConfiguration = vscode.workspace.getConfiguration("roblox-ts.color-picker");
+	if (colorConfiguration.get("enabled", true)) {
+		context.subscriptions.push(makeColorProvider());
+	}
 
 	statusBarDefaultState();
 	updateStatusButtonVisibility();

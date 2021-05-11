@@ -107,7 +107,9 @@
 				},
 				"roblox-ts.command.parameters": {
 					"type": "array",
-					"default": ["-w"],
+					"default": [
+						"-w"
+					],
 					"items": {
 						"type": "string"
 					},
@@ -117,6 +119,16 @@
 					"type": "boolean",
 					"default": false,
 					"description": "If enabled, this will use rbxtsc-dev instead of rbxtsc."
+				},
+				"roblox-ts.color-picker.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "If enabled, this will enable the color picker. (reload required)"
+				},
+				"roblox-ts.color-picker.precision": {
+					"type": "number",
+					"default": 2,
+					"description": "The amount of digits to round to while using the color picker."
 				}
 			}
 		}
@@ -130,6 +142,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/chroma-js": "^2.1.3",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.20.1",
@@ -142,6 +155,7 @@
 		"vscode-test": "^1.4.1"
 	},
 	"dependencies": {
+		"chroma-js": "^2.1.1",
 		"roblox-ts-extensions": "^1.5.0",
 		"tree-kill": "^1.2.2",
 		"typescript": "^4.1.5"
