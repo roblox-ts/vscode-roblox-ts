@@ -14,12 +14,12 @@ function clearNaN(value: Readonly<ColorArray>) {
 	return value.map(value => value !== value ? 0 : value) as ColorArray;
 }
 
-function normalizeHsv(value: Readonly<ColorArray>) {
-	return [value[0] / 360, value[1], value[2]] as ColorArray;
+function normalizeHsv(value: Readonly<ColorArray>): ColorArray {
+	return [value[0] / 360, value[1], value[2]];
 }
 
-function denormalizeHsv(value: Readonly<ColorArray>) {
-	return [value[0] * 360, value[1], value[2]] as ColorArray;
+function denormalizeHsv(value: Readonly<ColorArray>): ColorArray {
+	return [value[0] * 360, value[1], value[2]];
 }
 
 export function roundColor(value: Readonly<ColorArray>) {
