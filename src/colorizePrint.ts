@@ -60,9 +60,7 @@ export function makeColorProvider() {
 
 			const regexMatch = text.match(matchColors[match])!;
 
-			const matches: vscode.ProviderResult<Array<vscode.ColorPresentation>> = Object.entries(ColorType).map(([matchTypeRaw]): vscode.ColorPresentation => {
-				const matchType = matchTypeRaw as ColorType;
-
+			const matches: vscode.ProviderResult<Array<vscode.ColorPresentation>> = Object.entries(ColorType).map(([, matchType]): vscode.ColorPresentation => {
 				const colorMatch = matchType === ColorType.new
 					? [color.red, color.green, color.blue] as const
 					: colorTo[ColorType.new][matchType](...roundColor([color.red, color.green, color.blue]));
