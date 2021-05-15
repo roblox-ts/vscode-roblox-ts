@@ -176,7 +176,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const colorConfiguration = vscode.workspace.getConfiguration("roblox-ts.color-picker");
 	if (colorConfiguration.get("enabled", true)) {
-		context.subscriptions.push(makeColorProvider());
+		makeColorProvider().forEach(provider => context.subscriptions.push(provider));
 	}
 
 	statusBarDefaultState();
