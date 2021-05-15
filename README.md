@@ -6,6 +6,7 @@
 - Warn about non-type only cross-boundary imports.
 - Specify network boundaries in packages.
 - Status bar button to compile your project.
+- Color picker.
 - Remove internal fields from roblox-ts types.
 - Remove deprecated entries from intellisense.
 - Remove @hidden entries from intellisense.
@@ -15,6 +16,10 @@
 None currently
 
 ## Release Notes
+
+### 1.2.0
+- Added a color picker to Color3s.
+	- Thanks to [@xethlyz](https://github.com/xethlyx)
 
 ### 1.1.2
 - Fixed issue with output that caused text to overlap.
