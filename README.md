@@ -17,6 +17,10 @@ None currently
 
 ## Release Notes
 
+### 1.3.0
+- Updated TS to 4.3.2
+- Improved diagnostic messages for nominal types
+
 ### 1.2.0
 - Added a color picker to Color3s.
 	- Thanks to [@xethlyz](https://github.com/xethlyx)

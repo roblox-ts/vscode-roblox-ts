@@ -3,7 +3,7 @@
 	"publisher": "roblox-ts",
 	"displayName": "roblox-ts",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.52.0"
@@ -156,8 +156,8 @@
 	},
 	"dependencies": {
 		"chroma-js": "^2.1.1",
-		"roblox-ts-extensions": "^1.5.0",
+		"roblox-ts-extensions": "^1.6.0",
 		"tree-kill": "^1.2.2",
-		"typescript": "^4.1.5"
+		"typescript": "^4.3.2"
 	}
 }
