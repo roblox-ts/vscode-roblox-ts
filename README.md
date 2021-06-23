@@ -17,6 +17,9 @@ None currently
 
 ## Release Notes
 
+### 1.3.1
+- Color picker now works in tsx files
+
 ### 1.3.0
 - Updated TS to 4.3.2
 - Improved diagnostic messages for nominal types
