@@ -51,7 +51,7 @@ function extractTriColor(match: RegExpMatchArray): ColorArray {
 }
 
 export function makeColorProvider() {
-	return vscode.languages.registerColorProvider("typescript", {
+	const provider: vscode.DocumentColorProvider = {
 		provideColorPresentations: (color, context, token) => {
 			const text = context.document.getText(context.range);
 
@@ -91,5 +91,10 @@ export function makeColorProvider() {
 
 			return result;
 		}
-	});
+	};
+
+	return [
+		vscode.languages.registerColorProvider('typescript', provider),
+		vscode.languages.registerColorProvider('typescriptreact', provider)
+	];
 }
