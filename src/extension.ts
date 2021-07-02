@@ -70,8 +70,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		const outputPath = pathTranslator.getOutputPath(currentFile);
 		if (!existsSync(outputPath)) return showErrorMessage("Output file could not be found");
 
+		const openToSide = vscode.workspace.getConfiguration('roblox-ts').get<boolean>("openOutputToSide", true);
+		const viewColumn = openToSide ? vscode.ViewColumn.Beside : vscode.ViewColumn.Active;
 		vscode.workspace.openTextDocument(vscode.Uri.file(outputPath))
-			.then(document => vscode.window.showTextDocument(document, vscode.ViewColumn.Beside));
+			.then(document => vscode.window.showTextDocument(document, viewColumn));
 	};
 
 	const outputChannel = new VirtualTerminal("roblox-ts");

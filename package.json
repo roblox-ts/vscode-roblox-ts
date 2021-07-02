@@ -129,6 +129,11 @@
 					"type": "number",
 					"default": 2,
 					"description": "The amount of digits to round to while using the color picker."
+				},
+				"roblox-ts.openOutputToSide": {
+					"type": "boolean",
+					"default": true,
+					"description": "Determines whether the Open Output command will open the editor to the side."
 				}
 			}
 		}
