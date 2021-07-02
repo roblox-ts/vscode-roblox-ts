@@ -17,6 +17,10 @@ None currently
 
 ## Release Notes
 
+### 1.4.0
+- Added option to open output to the side. ([#5](https://github.com/roblox-ts/vscode-roblox-ts/pull/5))
+- Open Output opens to the side by default.
+
 ### 1.3.1
 - Color picker now works in tsx files
 
