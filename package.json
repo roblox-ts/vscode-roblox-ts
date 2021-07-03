@@ -120,12 +120,12 @@
 					"default": false,
 					"description": "If enabled, this will use rbxtsc-dev instead of rbxtsc."
 				},
-				"roblox-ts.color-picker.enabled": {
+				"roblox-ts.colorPicker.enabled": {
 					"type": "boolean",
 					"default": true,
 					"description": "If enabled, this will enable the color picker. (reload required)"
 				},
-				"roblox-ts.color-picker.precision": {
+				"roblox-ts.colorPicker.precision": {
 					"type": "number",
 					"default": 2,
 					"description": "The amount of digits to round to while using the color picker."

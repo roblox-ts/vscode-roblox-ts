@@ -23,7 +23,7 @@ function denormalizeHsv(value: Readonly<ColorArray>): ColorArray {
 }
 
 export function roundColor(value: Readonly<ColorArray>) {
-	const precision = 10**vscode.workspace.getConfiguration("roblox-ts.color-picker").get('precision', 2);
+	const precision = 10**vscode.workspace.getConfiguration("roblox-ts.colorPicker").get('precision', 2);
 	return value.map(value => Math.round(value * precision) / precision) as ColorArray;
 }
 
