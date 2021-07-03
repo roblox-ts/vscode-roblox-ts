@@ -2,9 +2,9 @@ import * as chroma from 'chroma-js';
 import * as vscode from 'vscode';
 
 export enum ColorType {
-	new = 'new',
 	fromRGB = 'fromRGB',
-	fromHSV = 'fromHSV'
+	fromHSV = 'fromHSV',
+	new = 'new'
 }
 
 type ExcludeSelfDoubleRecord<K extends string, V> = { [I in K]: Record<Exclude<K, I>, V> };
@@ -23,7 +23,7 @@ function denormalizeHsv(value: Readonly<ColorArray>): ColorArray {
 }
 
 export function roundColor(value: Readonly<ColorArray>) {
-	const precision = 10**vscode.workspace.getConfiguration("roblox-ts.color-picker").get('precision', 2);
+	const precision = 10**vscode.workspace.getConfiguration("roblox-ts.colorPicker").get('precision', 2);
 	return value.map(value => Math.round(value * precision) / precision) as ColorArray;
 }
 
