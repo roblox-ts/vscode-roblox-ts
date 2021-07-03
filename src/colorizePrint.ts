@@ -52,7 +52,6 @@ function extractTriColor(match: RegExpMatchArray): ColorArray {
 
 function getRotatedColorType() {
 	const defaultColorType = vscode.workspace.getConfiguration("roblox-ts.colorPicker").get("defaultOption", ColorType.fromRGB);
-	console.log(defaultColorType);
 
 	const rotatingArray = Object.values(ColorType);
 	const location = rotatingArray.findIndex(value => value === defaultColorType);
