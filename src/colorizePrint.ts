@@ -50,6 +50,17 @@ function extractTriColor(match: RegExpMatchArray): ColorArray {
 	return [Number(match[3]), Number(match[5]), Number(match[7])];
 }
 
+function getRotatedColorType() {
+	const defaultColorType = vscode.workspace.getConfiguration("roblox-ts.colorPicker").get("defaultOption", ColorType.fromRGB);
+	console.log(defaultColorType);
+
+	const rotatingArray = Object.values(ColorType);
+	const location = rotatingArray.findIndex(value => value === defaultColorType);
+
+	rotatingArray.unshift(...rotatingArray.splice(location, rotatingArray.length));
+	return rotatingArray;
+}
+
 export function makeColorProvider() {
 	const provider: vscode.DocumentColorProvider = {
 		provideColorPresentations: (color, context, token) => {
@@ -60,7 +71,7 @@ export function makeColorProvider() {
 
 			const regexMatch = text.match(matchColors[match])!;
 
-			const matches: vscode.ProviderResult<Array<vscode.ColorPresentation>> = Object.values(ColorType).map((matchType): vscode.ColorPresentation => {
+			const matches: vscode.ProviderResult<Array<vscode.ColorPresentation>> = getRotatedColorType().map((matchType): vscode.ColorPresentation => {
 				const colorMatch = matchType === ColorType.new
 					? [color.red, color.green, color.blue] as const
 					: colorTo[ColorType.new][matchType](...roundColor([color.red, color.green, color.blue]));

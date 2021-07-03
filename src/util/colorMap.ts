@@ -2,9 +2,9 @@ import * as chroma from 'chroma-js';
 import * as vscode from 'vscode';
 
 export enum ColorType {
-	new = 'new',
 	fromRGB = 'fromRGB',
-	fromHSV = 'fromHSV'
+	fromHSV = 'fromHSV',
+	new = 'new'
 }
 
 type ExcludeSelfDoubleRecord<K extends string, V> = { [I in K]: Record<Exclude<K, I>, V> };

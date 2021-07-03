@@ -130,6 +130,20 @@
 					"default": 2,
 					"description": "The amount of digits to round to while using the color picker."
 				},
+				"roblox-ts.colorPicker.defaultOption": {
+					"type": "string",
+					"default": "fromRGB",
+					"enum": [
+						"fromRGB",
+						"fromHSV",
+						"new"
+					],
+					"enumDescriptions": [
+						"Use Color3.fromRGB() as the default in the color picker",
+						"Use Color3.fromHSV() as the default in the color picker",
+						"Use new Color3() as the default in the color picker"
+					]
+				},
 				"roblox-ts.openOutputToSide": {
 					"type": "boolean",
 					"default": true,
