@@ -136,6 +136,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 
 		compilerProcess.stdout.on("data", chunk => outputChannel.append(chunk.toString()));
+		compilerProcess.stderr.on("data", chunk => outputChannel.append(chunk.toString()));
 
 		compilerProcess.on("exit", exitCode => {
 			vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
