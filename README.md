@@ -17,6 +17,9 @@ None currently
 
 ## Release Notes
 
+### 1.5.3
+- Improved logic for determing whether a project is a roblox-ts project.
+
 ### 1.5.0
 - Added option to change default color format for color picker.
 
