@@ -124,7 +124,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
 		if (!development && fs.existsSync(localInstall)) {
 			outputChannel.appendLine("Detected local install, using local install instead of global");
-			compilerProcess = childProcess.spawn(`"${localInstall}"`, parameters, options);
+			compilerProcess = childProcess.spawn(`"${localInstall.replaceAll(/"/g, '\\"')}"`, parameters, options);
 		} else {
 			compilerProcess = childProcess.spawn(compilerCommand, parameters, options);
 		}
