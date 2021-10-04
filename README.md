@@ -17,6 +17,9 @@ None currently
 
 ## Release Notes
 
+### 1.5.4
+- Add support for TS 4.4.3
+
 ### 1.5.3
 - Improved logic for determing whether a project is a roblox-ts project.
 
