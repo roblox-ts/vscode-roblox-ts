@@ -11,11 +11,10 @@
 - Remove deprecated entries from intellisense.
 - Remove @hidden entries from intellisense.
 
-## Known Issues
-
-None currently
-
 ## Release Notes
+
+### 1.5.5
+- Fixed status bar button for projects with spaces in the path. ([#7](https://github.com/roblox-ts/vscode-roblox-ts/pull/7))
 
 ### 1.5.4
 - Add support for TS 4.4.3
