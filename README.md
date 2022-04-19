@@ -13,6 +13,10 @@
 
 ## Release Notes
 
+### 1.6.0
+- All JSDoc tags can now be inherited from class implements clauses.
+- Added `@hideinherited` JSDoc tag to only hide this element when it's inherited by a class.
+
 ### 1.5.5
 - Fixed status bar button for projects with spaces in the path. ([#7](https://github.com/roblox-ts/vscode-roblox-ts/pull/7))
 
