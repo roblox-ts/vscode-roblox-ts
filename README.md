@@ -13,6 +13,9 @@
 
 ## Release Notes
 
+### 1.6.1
+- Fixed inherited members not working with aliased symbols.
+
 ### 1.6.0
 - All JSDoc tags can now be inherited from class implements clauses.
 - Added `@hideinherited` JSDoc tag to only hide this element when it's inherited by a class.
