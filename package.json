@@ -3,7 +3,7 @@
 	"publisher": "roblox-ts",
 	"displayName": "roblox-ts",
 	"description": "A language service plugin that enhances the editing experience in roblox-ts.",
-	"version": "1.6.1",
+	"version": "1.6.2",
 	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.52.0"
