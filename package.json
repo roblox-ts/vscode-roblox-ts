@@ -175,7 +175,7 @@
 	},
 	"dependencies": {
 		"chroma-js": "^2.1.1",
-		"roblox-ts-extensions": "^1.7.1",
+		"roblox-ts-extensions": "^1.7.2",
 		"tree-kill": "^1.2.2",
 		"typescript": "^4.3.2"
 	}
