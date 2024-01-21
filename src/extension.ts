@@ -200,6 +200,7 @@ export function configurePlugin(api: any) {
 	api.configurePlugin("roblox-ts-extensions", {
 		mode: boundary.get("mode"),
 		useRojo: boundary.get("useRojo"),
+		diagnosticsMode: boundary.get("diagnosticsMode"),
 		server: paths.get("serverPaths"),
 		client: paths.get("clientPaths"),
 		hideDeprecated: editor.get("hideDeprecated")

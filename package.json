@@ -84,6 +84,22 @@
 						"Prefix cross-boundary imports with their boundary."
 					]
 				},
+				"roblox-ts.boundary.diagnosticsMode": {
+					"type": "string",
+					"default": "warning",
+					"enum": [
+						"off",
+						"warning",
+						"error",
+						"message"
+					],
+					"enumDescriptions": [
+						"Disable diagnostics for non-type cross-boundary imports.",
+						"Show a warning for non-type cross-boundary imports.",
+						"Show an error for non-type cross-boundary imports.",
+						"Show a message for non-type cross-boundary imports."
+					]
+				},
 				"roblox-ts.boundary.paths.clientPaths": {
 					"type": "array",
 					"default": [],
