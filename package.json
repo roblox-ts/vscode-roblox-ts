@@ -17,7 +17,7 @@
 	},
 	"main": "./out/extension.js",
 	"activationEvents": [
-		"workspaceContains:**/node_modules/@rbxts/compiler-types"
+		"workspaceContains:node_modules/@rbxts/compiler-types"
 	],
 	"contributes": {
 		"typescriptServerPlugins": [
