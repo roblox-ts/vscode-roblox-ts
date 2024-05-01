@@ -164,7 +164,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const localInstall = path.join(modulesPath, "node_modules", ".bin", "rbxtsc");
 		const useScripts = commandConfiguration.get<boolean>("npm.useNpmScripts");
 		const watchScript = commandConfiguration.get<string>("npm.watchScript") ?? "watch";
-		const watchScriptArgs = commandConfiguration.get<string>("npm.watchScriptArgs") ?? [];
+		const watchScriptArgs = commandConfiguration.get<string[]>("npm.watchScriptArgs") ?? [];
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
 		if (!development && useScripts && hasScript(packageJson, watchScript)) {
