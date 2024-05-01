@@ -121,6 +121,11 @@
 					"default": true,
 					"description": "Whether to show the status button."
 				},
+				"roblox-ts.command.useNpmScripts": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether to use the npm scripts rather than rbxtsc, if they exist."
+				},
 				"roblox-ts.command.parameters": {
 					"type": "array",
 					"default": [

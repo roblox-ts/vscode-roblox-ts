@@ -161,12 +161,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		// Detect if there is a local install
 		const localInstall = path.join(modulesPath, "node_modules", ".bin", "rbxtsc");
+		const useScripts = commandConfiguration.get<boolean>("useNpmScripts");
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
-		if (!development && fs.existsSync(localInstall)) {
-			compilation.terminal.appendLine("Detected local install, using local install instead of global");
+		if (!development && useScripts && hasScript(packageJson, "watch")) {
+			compilation.terminal.appendLine("roblox-ts has started, using watch script");
+			compilerProcess = childProcess.spawn("npm", ["run", "watch"], options);
+		}  else if (!development && fs.existsSync(localInstall)) {
+			compilation.terminal.appendLine("roblox-ts has started, using local roblox-ts install");
 			compilerProcess = childProcess.spawn(`"${localInstall.replaceAll(/"/g, '\\"')}"`, parameters, options);
 		} else {
+			compilation.terminal.appendLine("roblox-ts has started, using global roblox-ts install");
 			compilerProcess = childProcess.spawn(compilerCommand, parameters, options);
 		}
 
@@ -279,4 +284,8 @@ function getProjectPath(file: string) {
 	if (!tsconfigPath) return showErrorMessage("tsconfig not found");
 
 	return path.dirname(tsconfigPath);
+}
+
+function hasScript(json: any, script: string) {
+	return json.scripts?.[script] !== undefined;
 }
