@@ -103,6 +103,8 @@ export async function activate(context: vscode.ExtensionContext) {
 			statusBarItem.text = "$(debug-start) roblox-ts";
 			statusBarItem.command = "roblox-ts.start";
 		}
+
+		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', compilation?.cancel !== undefined);
 	};
 
 	const updateStatusButtonVisibility = () => {
@@ -166,7 +168,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		const watchScript = commandConfiguration.get<string>("npm.watchScript") ?? "watch";
 		const watchScriptArgs = commandConfiguration.get<string[]>("npm.watchScriptArgs") ?? [];
 
-		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
 		if (!development && useScripts && hasScript(packageJson, watchScript)) {
 			compilation.terminal.appendLine("roblox-ts has started, using watch script");
 			compilerProcess = childProcess.spawn("npm", ["run", watchScript, ...watchScriptArgs], options);
@@ -214,7 +215,6 @@ export async function activate(context: vscode.ExtensionContext) {
 				treeKill(compilerProcess.pid);
 			}
 			updateStatusBarState();
-			vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
 		};
 
 		updateStatusBarState();
@@ -259,7 +259,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	updateStatusButtonVisibility();
 
 	vscode.commands.executeCommand('setContext', 'roblox-ts:inSrcDir', vscode.window.activeTextEditor?.document.uri.fsPath ?? false);
-	vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
 
 	console.log('roblox-ts extensions has loaded');
 }
