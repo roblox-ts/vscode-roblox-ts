@@ -5,11 +5,16 @@ import * as path from "path";
 import * as treeKill from 'tree-kill';
 import * as vscode from 'vscode';
 import { makeColorProvider } from './colorizePrint';
-import { getCompilerOptionsAtFile } from './util/compilerOptions';
+import { getCompilerOptionsAtFile, getPackageJsonAtFile, getTsConfigPathAtFile } from './util/compilerOptions';
 import { isPathInSrc } from './util/isPathInSrc';
 import { PathTranslator } from './util/PathTranslator';
 import { showErrorMessage } from './util/showMessage';
 import { VirtualTerminal } from './VirtualTerminal';
+
+interface ProjectCompilation {
+	terminal: VirtualTerminal,
+	cancel?: () => void;
+}
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Retrieve a reference to vscode's typescript extension.
@@ -76,16 +81,28 @@ export async function activate(context: vscode.ExtensionContext) {
 			.then(document => vscode.window.showTextDocument(document, viewColumn));
 	};
 
-	const outputChannel = new VirtualTerminal("roblox-ts");
+	const compilations = new Map<string, ProjectCompilation>();
 
 	const statusBarItem = vscode.window.createStatusBarItem(
 		vscode.StatusBarAlignment.Right,
 		500
 	);
 
-	const statusBarDefaultState = () => {
-		statusBarItem.text = "$(debug-start) roblox-ts";
-		statusBarItem.command = "roblox-ts.start";
+	const updateStatusBarState = () => {
+		var currentFile = vscode.window.activeTextEditor?.document.fileName;
+		if (!currentFile) return;
+
+		const projectPath = getProjectPath(currentFile);
+		if (!projectPath) return;
+
+		const compilation = compilations.get(projectPath);
+		if (compilation && compilation.cancel) {
+			statusBarItem.text = "$(debug-stop) roblox-ts";
+			statusBarItem.command = "roblox-ts.stop";
+		} else {
+			statusBarItem.text = "$(debug-start) roblox-ts";
+			statusBarItem.command = "roblox-ts.start";
+		}
 	};
 
 	const updateStatusButtonVisibility = () => {
@@ -96,34 +113,58 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	};
 
-	let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
-	let compilerPendingExit = false;
 	const startCompiler = async() => {
-		statusBarItem.text = "$(debug-stop) roblox-ts";
-		statusBarItem.command = "roblox-ts.stop";
+		var currentFile = vscode.window.activeTextEditor?.document.fileName;
+		if (!currentFile) return showErrorMessage("No file selected");
 
-		if (!vscode.workspace.workspaceFolders) return showErrorMessage("Not in a workspace");
+		const packagePath = getPackageJsonAtFile(currentFile);
+		if (!packagePath) return showErrorMessage("package.json not found");
 
-		outputChannel.show();
-		outputChannel.appendLine("Starting compiler..");
+		const projectPath = getProjectPath(currentFile);
+		if (!projectPath) return showErrorMessage("tsconfig not found");
+
+		const packageJson = JSON.parse(fs.readFileSync(packagePath, { encoding: "ascii" }));
+		const modulesPath = path.dirname(packagePath);
+
+		let compilation = compilations.get(projectPath);
+		if (!compilation) {
+			compilation = {
+				terminal: new VirtualTerminal(`roblox-ts (${packageJson.name})`)
+			};
+
+			compilation.terminal.onClose(() => {
+				if (statusBarItem.command === "roblox-ts.stop") {
+					compilation!.cancel?.();
+					compilation!.terminal.dispose();
+					compilations.delete(projectPath);
+				}
+			});
+
+			compilations.set(projectPath, compilation);
+		}
+
+		compilation.terminal.show();
+		compilation.terminal.appendLine("Starting compiler..");
 
 		const commandConfiguration = vscode.workspace.getConfiguration("roblox-ts.command");
 		const parameters = commandConfiguration.get<Array<string>>("parameters", ["-w"]);
-		const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
 		const options = {
-			cwd: workspacePath.toString(),
+			cwd: projectPath.toString(),
 			shell: true
 		};
 
 		const development = commandConfiguration.get("development", false);
 		const compilerCommand = development ? "rbxtsc-dev" : "rbxtsc";
 
+		let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
+		let compilerPendingExit = false;
+
 		// Detect if there is a local install
-		const localInstall = path.join(workspacePath, "node_modules", ".bin", "rbxtsc");
+		const localInstall = path.join(modulesPath, "node_modules", ".bin", "rbxtsc");
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
 		if (!development && fs.existsSync(localInstall)) {
-			outputChannel.appendLine("Detected local install, using local install instead of global");
+			compilation.terminal.appendLine("Detected local install, using local install instead of global");
 			compilerProcess = childProcess.spawn(`"${localInstall.replaceAll(/"/g, '\\"')}"`, parameters, options);
 		} else {
 			compilerProcess = childProcess.spawn(compilerCommand, parameters, options);
@@ -132,57 +173,80 @@ export async function activate(context: vscode.ExtensionContext) {
 		compilerProcess.on("error", error => {
 			const errorMessage = `Error while starting compiler: ${error.message}`;
 			showErrorMessage(errorMessage);
-			outputChannel.appendLine(errorMessage);
+			compilation.terminal.appendLine(errorMessage);
+			compilation.cancel?.();
 		});
 
-		compilerProcess.stdout.on("data", chunk => outputChannel.append(chunk.toString()));
-		compilerProcess.stderr.on("data", chunk => outputChannel.append(chunk.toString()));
+		compilerProcess.stdout.on("data", chunk => compilation.terminal.append(chunk.toString()));
+		compilerProcess.stderr.on("data", chunk => compilation.terminal.append(chunk.toString()));
 
 		compilerProcess.on("exit", exitCode => {
-			vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
-
 			if (exitCode && !compilerPendingExit) {
 				vscode.window.showErrorMessage("Compiler did not exit successfully.", "Show Output").then(choice => {
 					if (!choice) return;
 
-					outputChannel.show();
+					compilation.terminal.show();
 				});
 			}
 
-			compilerPendingExit = false;
-
-			outputChannel.appendLine(`Compiler exited with code ${exitCode ?? 0}`);
-			statusBarDefaultState();
+			compilation.terminal.appendLine(`Compiler exited with code ${exitCode ?? 0}`);
+			compilation.cancel?.();
+			updateStatusBarState();
 		});
-	};
 
-	const stopCompiler = async() => {
-		outputChannel.appendLine("Stopping compiler..");
-		compilerPendingExit = true;
-
-		treeKill(compilerProcess.pid);
-	};
-
-	outputChannel.onClose(() => {
-		if (statusBarItem.command === "roblox-ts.stop") {
-			stopCompiler();
+		if (compilation.cancel) {
+			compilation.cancel();
 		}
-	});
+
+		compilation.cancel = () => {
+			compilation.cancel = undefined;
+			if (compilerProcess.connected) {
+				compilerPendingExit = true;
+				treeKill(compilerProcess.pid);
+			}
+			updateStatusBarState();
+			vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', false);
+		};
+
+		updateStatusBarState();
+	};
+
+	const stopCompiler = async () => {
+		var currentFile = vscode.window.activeTextEditor?.document.fileName;
+		if (!currentFile) return showErrorMessage("No file selected");
+
+		const projectPath = getProjectPath(currentFile);
+		if (!projectPath) return showErrorMessage("No project found");
+
+		const compilation = compilations.get(projectPath);
+		if (!compilation || !compilation.cancel) return showErrorMessage("This project is not compiling");
+
+		compilation.terminal.appendLine("Stopping compiler..");
+		compilation.cancel();
+	};
 
 	// Register commands.
 	context.subscriptions.push(vscode.commands.registerCommand("roblox-ts.openOutput", openOutput));
 	context.subscriptions.push(vscode.commands.registerCommand("roblox-ts.start", startCompiler));
 	context.subscriptions.push(vscode.commands.registerCommand("roblox-ts.stop", stopCompiler));
+	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => updateStatusBarState()));
 
 	context.subscriptions.push(statusBarItem);
-	context.subscriptions.push(outputChannel);
+	context.subscriptions.push({
+		dispose: () => {
+			for (const [_, compilation] of compilations) {
+				compilation.terminal.dispose();
+				compilation.cancel?.();
+			}
+		}
+	});
 
 	const colorConfiguration = vscode.workspace.getConfiguration("roblox-ts.colorPicker");
 	if (colorConfiguration.get("enabled", true)) {
 		makeColorProvider().forEach(provider => context.subscriptions.push(provider));
 	}
 
-	statusBarDefaultState();
+	updateStatusBarState();
 	updateStatusButtonVisibility();
 
 	vscode.commands.executeCommand('setContext', 'roblox-ts:inSrcDir', vscode.window.activeTextEditor?.document.uri.fsPath ?? false);
@@ -209,3 +273,10 @@ export function configurePlugin(api: any) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+function getProjectPath(file: string) {
+	const tsconfigPath = getTsConfigPathAtFile(file);
+	if (!tsconfigPath) return showErrorMessage("tsconfig not found");
+
+	return path.dirname(tsconfigPath);
+}
