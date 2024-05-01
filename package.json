@@ -131,6 +131,14 @@
 					"default": "watch",
 					"description": "The name of the npm watch script that roblox-ts should use."
 				},
+				"roblox-ts.command.npm.watchScriptArgs": {
+					"type": "array",
+					"default": ["--"],
+					"items": {
+						"type": "string"
+					},
+					"description": "Additional arguments passed to npm run. Arguments after the `--` will be passed directly to the npm script."
+				},
 				"roblox-ts.command.parameters": {
 					"type": "array",
 					"default": [
@@ -139,7 +147,7 @@
 					"items": {
 						"type": "string"
 					},
-					"description": "The parameters to be passed into the command triggered from the status bar."
+					"description": "The parameters to be passed into the command triggered from the status bar, except when using npm scripts."
 				},
 				"roblox-ts.command.development": {
 					"type": "boolean",

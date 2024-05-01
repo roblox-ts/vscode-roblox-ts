@@ -164,11 +164,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		const localInstall = path.join(modulesPath, "node_modules", ".bin", "rbxtsc");
 		const useScripts = commandConfiguration.get<boolean>("npm.useNpmScripts");
 		const watchScript = commandConfiguration.get<string>("npm.watchScript") ?? "watch";
+		const watchScriptArgs = commandConfiguration.get<string>("npm.watchScriptArgs") ?? [];
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
 		if (!development && useScripts && hasScript(packageJson, watchScript)) {
 			compilation.terminal.appendLine("roblox-ts has started, using watch script");
-			compilerProcess = childProcess.spawn("npm", ["run", watchScript], options);
+			compilerProcess = childProcess.spawn("npm", ["run", watchScript, ...watchScriptArgs], options);
 		}  else if (!development && fs.existsSync(localInstall)) {
 			compilation.terminal.appendLine("roblox-ts has started, using local roblox-ts install");
 			compilerProcess = childProcess.spawn(`"${localInstall.replaceAll(/"/g, '\\"')}"`, parameters, options);
