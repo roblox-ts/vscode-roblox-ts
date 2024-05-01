@@ -121,10 +121,15 @@
 					"default": true,
 					"description": "Whether to show the status button."
 				},
-				"roblox-ts.command.useNpmScripts": {
+				"roblox-ts.command.npm.useNpmScripts": {
 					"type": "boolean",
 					"default": true,
 					"description": "Whether to use the npm scripts rather than rbxtsc, if they exist."
+				},
+				"roblox-ts.command.npm.watchScript": {
+					"type": "string",
+					"default": "watch",
+					"description": "The name of the npm watch script that roblox-ts should use."
 				},
 				"roblox-ts.command.parameters": {
 					"type": "array",

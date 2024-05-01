@@ -158,15 +158,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		let compilerProcess: childProcess.ChildProcessWithoutNullStreams;
 		let compilerPendingExit = false;
+		let compilerIsRunning = true;
 
 		// Detect if there is a local install
 		const localInstall = path.join(modulesPath, "node_modules", ".bin", "rbxtsc");
-		const useScripts = commandConfiguration.get<boolean>("useNpmScripts");
+		const useScripts = commandConfiguration.get<boolean>("npm.useNpmScripts");
+		const watchScript = commandConfiguration.get<string>("npm.watchScript") ?? "watch";
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', true);
-		if (!development && useScripts && hasScript(packageJson, "watch")) {
+		if (!development && useScripts && hasScript(packageJson, watchScript)) {
 			compilation.terminal.appendLine("roblox-ts has started, using watch script");
-			compilerProcess = childProcess.spawn("npm", ["run", "watch"], options);
+			compilerProcess = childProcess.spawn("npm", ["run", watchScript], options);
 		}  else if (!development && fs.existsSync(localInstall)) {
 			compilation.terminal.appendLine("roblox-ts has started, using local roblox-ts install");
 			compilerProcess = childProcess.spawn(`"${localInstall.replaceAll(/"/g, '\\"')}"`, parameters, options);
@@ -197,6 +199,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			compilation.terminal.appendLine(`Compiler exited with code ${exitCode ?? 0}`);
 			compilation.cancel?.();
 			updateStatusBarState();
+			compilerIsRunning = false;
 		});
 
 		if (compilation.cancel) {
@@ -205,7 +208,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		compilation.cancel = () => {
 			compilation.cancel = undefined;
-			if (compilerProcess.connected) {
+			if (compilerIsRunning) {
 				compilerPendingExit = true;
 				treeKill(compilerProcess.pid);
 			}
