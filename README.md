@@ -13,6 +13,14 @@
 
 ## Release Notes
 
+### 1.8.0
+- The `Start Compiler` and `Stop Compiler` commands now supports compiling multiple roblox-ts projects at once.
+- The `Start Compiler` and `Stop Compiler` commands will now work in monorepos and workspaces.
+- Added support for npm scripts which can be enabled with `roblox-ts.command.npm.useNpmScripts`.
+
+### 1.7.0
+- Added `roblox-ts.boundary.diagnosticsMode` setting to adjust cross boundary import diagnostic behavior.
+
 ### 1.6.1
 - Fixed inherited members not working with aliased symbols.
 
