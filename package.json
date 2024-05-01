@@ -123,7 +123,7 @@
 				},
 				"roblox-ts.command.npm.useNpmScripts": {
 					"type": "boolean",
-					"default": true,
+					"default": false,
 					"description": "Whether to use the npm scripts rather than rbxtsc, if they exist."
 				},
 				"roblox-ts.command.npm.watchScript": {
