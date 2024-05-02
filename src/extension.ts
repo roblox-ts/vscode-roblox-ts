@@ -284,7 +284,7 @@ export function deactivate() {}
 
 function getProjectPath(file: string) {
 	const tsconfigPath = getTsConfigPathAtFile(file);
-	if (!tsconfigPath) return showErrorMessage("tsconfig not found");
+	if (!tsconfigPath) return;
 
 	return path.dirname(tsconfigPath);
 }
