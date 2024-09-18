@@ -212,7 +212,7 @@
 	"dependencies": {
 		"@roblox-ts/path-translator": "^1.1.0",
 		"chroma-js": "^2.1.1",
-		"roblox-ts-extensions": "^1.7.2",
+		"roblox-ts-extensions": "^1.8.0",
 		"tree-kill": "^1.2.2",
 		"typescript": "^5.4.5"
 	}
