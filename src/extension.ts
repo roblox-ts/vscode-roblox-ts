@@ -7,9 +7,10 @@ import * as vscode from 'vscode';
 import { makeColorProvider } from './colorizePrint';
 import { getCompilerOptionsAtFile, getPackageJsonAtFile, getTsConfigPathAtFile } from './util/compilerOptions';
 import { isPathInSrc } from './util/isPathInSrc';
-import { PathTranslator } from './util/PathTranslator';
 import { showErrorMessage } from './util/showMessage';
 import { VirtualTerminal } from './VirtualTerminal';
+import { PathTranslator } from '@roblox-ts/path-translator';
+import type ts = require('typescript');
 
 interface ProjectCompilation {
 	terminal: VirtualTerminal,
@@ -51,6 +52,42 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	}, undefined, context.subscriptions);
 
+	const createPathTranslator = (basePath: string, compilerOptions: ts.CompilerOptions, luau: boolean) => {
+		if (!compilerOptions.rootDir || !compilerOptions.outDir) {
+			return showErrorMessage("rootDir or outDir not specified");
+		}
+
+		return new PathTranslator(
+			path.join(basePath, compilerOptions.rootDir),
+			path.join(basePath, compilerOptions.outDir),
+			undefined,
+			true,
+			luau
+		);
+	};
+
+	const getOutputPath = (basePath: string, compilerOptions: ts.CompilerOptions, file: string) => {
+		const luauPathTranslator = createPathTranslator(basePath, compilerOptions, true);
+		if (!luauPathTranslator) {
+			return;
+		}
+
+		const luauPath = luauPathTranslator.getOutputPath(file);
+		if (existsSync(luauPath)) {
+			return luauPath;
+		}
+
+		const luaPathTranslator = createPathTranslator(basePath, compilerOptions, false);
+		if (!luaPathTranslator) {
+			return;
+		}
+
+		const luaPath = luaPathTranslator.getOutputPath(file);
+		if (existsSync(luaPath)) {
+			return luaPath;
+		}
+	};
+
 	// Find and open output file.
 	const openOutput = () => {
 		var currentFile = vscode.window.activeTextEditor?.document.fileName;
@@ -61,19 +98,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		const [tsconfigPath, compilerOptions] = result;
 		if (!compilerOptions) return showErrorMessage("compilerOptions not found");
-		if (!compilerOptions.rootDir || !compilerOptions.outDir) return showErrorMessage("rootDir or outDir not specified");
 
 		if (!isPathInSrc(currentFile, result)) return showErrorMessage("File not in srcDir");
 
 		const basePath = path.dirname(tsconfigPath);
-		const pathTranslator = new PathTranslator(
-			path.join(basePath, compilerOptions.rootDir),
-			path.join(basePath, compilerOptions.outDir),
-			undefined,
-			true
-		);
-		const outputPath = pathTranslator.getOutputPath(currentFile);
-		if (!existsSync(outputPath)) return showErrorMessage("Output file could not be found");
+		const outputPath = getOutputPath(basePath, compilerOptions, currentFile);
+		if (outputPath === undefined) return showErrorMessage("Output file could not be found");
 
 		const openToSide = vscode.workspace.getConfiguration('roblox-ts').get<boolean>("openOutputToSide", true);
 		const viewColumn = openToSide ? vscode.ViewColumn.Beside : vscode.ViewColumn.Active;
