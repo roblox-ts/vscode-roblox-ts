@@ -1,3 +1,4 @@
+import { PathTranslator } from '@roblox-ts/path-translator';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { existsSync } from 'fs';
@@ -9,12 +10,19 @@ import { getCompilerOptionsAtFile, getPackageJsonAtFile, getTsConfigPathAtFile }
 import { isPathInSrc } from './util/isPathInSrc';
 import { showErrorMessage } from './util/showMessage';
 import { VirtualTerminal } from './VirtualTerminal';
-import { PathTranslator } from '@roblox-ts/path-translator';
 import type ts = require('typescript');
 
 interface ProjectCompilation {
-	terminal: VirtualTerminal,
+	terminal: VirtualTerminal;
+	status:
+		| { type: "success", since: number, timeout: number }
+		| { type: "compiling" }
+		| { type: "error", count: number, since: number, timeout: number };
 	cancel?: () => void;
+}
+
+function stripColors(input: string) {
+	return input.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
 }
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -127,11 +135,44 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		const compilation = compilations.get(projectPath);
 		if (compilation && compilation.cancel) {
-			statusBarItem.text = "$(debug-stop) roblox-ts";
 			statusBarItem.command = "roblox-ts.stop";
+
+			switch (compilation.status.type) {
+				case "compiling": {
+					statusBarItem.text = "$(loading~spin) roblox-ts";
+					statusBarItem.color = undefined;
+					break;
+				}
+
+				case "error": {
+					if (compilation.status.timeout !== -1 && Date.now() - compilation.status.since >= compilation.status.timeout) {
+						statusBarItem.text = "$(debug-stop) roblox-ts";
+						statusBarItem.color = undefined;
+					} else {
+						statusBarItem.text = `${compilation.status.count} $(error) roblox-ts`;
+						if (vscode.workspace.getConfiguration("roblox-ts.command.status").get("errorMessageColor", false)) {
+							statusBarItem.color = new vscode.ThemeColor("errorForeground");
+						} else {
+							statusBarItem.color = undefined;
+						}
+					}
+					break;
+				}
+
+				case "success": {
+					if (compilation.status.timeout !== -1 && Date.now() - compilation.status.since >= compilation.status.timeout) {
+						statusBarItem.text = "$(debug-stop) roblox-ts";
+					} else {
+						statusBarItem.text = "$(check) roblox-ts";
+					}
+					statusBarItem.color = undefined;
+					break;
+				}
+			}
 		} else {
 			statusBarItem.text = "$(debug-start) roblox-ts";
 			statusBarItem.command = "roblox-ts.start";
+			statusBarItem.color = undefined;
 		}
 
 		vscode.commands.executeCommand('setContext', 'roblox-ts:compilerActive', compilation?.cancel !== undefined);
@@ -159,9 +200,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		const modulesPath = path.dirname(packagePath);
 
 		let compilation = compilations.get(projectPath);
-		if (!compilation) {
+		if (compilation) {
+			compilation.status = { type: "compiling" };
+		} else {
 			compilation = {
-				terminal: new VirtualTerminal(`roblox-ts (${packageJson.name})`)
+				terminal: new VirtualTerminal(`roblox-ts (${packageJson.name})`),
+				status: { type: "compiling" },
 			};
 
 			compilation.terminal.onClose(() => {
@@ -216,7 +260,41 @@ export async function activate(context: vscode.ExtensionContext) {
 			compilation.cancel?.();
 		});
 
-		compilerProcess.stdout.on("data", chunk => compilation.terminal.append(chunk.toString()));
+		compilerProcess.stdout.on("data", chunk => {
+			const uncoloredChunk = stripColors(chunk.toString());
+			if (uncoloredChunk.match(/\[[^\]]+] Starting compilation in watch mode\.\.\./) || uncoloredChunk.match(/\[[^\]]+] File change detected. Starting incremental compilation\.\.\./)) {
+				compilation.status = { type: "compiling" };
+				updateStatusBarState();
+			} else {
+				const finished = uncoloredChunk.match(/\[[^\]]+] Found (\d+) errors?\. Watching for file changes./);
+				if (finished) {
+					const errors = +finished[1];
+					if (errors > 0) {
+						const timeout = vscode.workspace.getConfiguration("roblox-ts.command.status").get("errorMessageDuration", 2000);
+
+						compilation.status = {
+							type: "error",
+							since: Date.now(),
+							count: errors,
+							timeout,
+						};
+						setTimeout(updateStatusBarState, timeout);
+					} else {
+						const timeout = vscode.workspace.getConfiguration("roblox-ts.command.status").get("successMessageDuration", 2000);
+
+						compilation.status = {
+							type: "success",
+							since: Date.now(),
+							timeout,
+						};
+						setTimeout(updateStatusBarState, timeout);
+					}
+					updateStatusBarState();
+				}
+			}
+
+			compilation.terminal.append(chunk.toString());
+		});
 		compilerProcess.stderr.on("data", chunk => compilation.terminal.append(chunk.toString()));
 
 		compilerProcess.on("exit", exitCode => {

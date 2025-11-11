@@ -121,6 +121,21 @@
 					"default": true,
 					"description": "Whether to show the status button."
 				},
+				"roblox-ts.command.status.successMessageDuration": {
+					"type": "number",
+					"default": 2000,
+					"description": "The amount of milliseconds to keep the success icon around after compilation succeeds. Set to -1 to show forever."
+				},
+				"roblox-ts.command.status.errorMessageDuration": {
+					"type": "number",
+					"default": 2000,
+					"description": "The amount of milliseconds to keep the error message around after compilation fails. Set to -1 to show forever."
+				},
+				"roblox-ts.command.status.errorMessageColor": {
+					"type": "boolean",
+					"default": false,
+					"description": "Whether to color the error message red when an error occurs"
+				},
 				"roblox-ts.command.npm.useNpmScripts": {
 					"type": "boolean",
 					"default": false,
