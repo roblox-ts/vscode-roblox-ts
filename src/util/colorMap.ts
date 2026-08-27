@@ -4,11 +4,16 @@ import * as vscode from 'vscode';
 export enum ColorType {
 	fromRGB = 'fromRGB',
 	fromHSV = 'fromHSV',
+	fromHex = 'fromHex',
 	new = 'new'
 }
 
 type ExcludeSelfDoubleRecord<K extends string, V> = { [I in K]: Record<Exclude<K, I>, V> };
 export type ColorArray = [number, number, number];
+
+// fromHex only converts to/from `new` (a plain 0-1 rgb triplet), since it takes a
+// single hex string rather than three numbers and doesn't fit the numeric matrix below.
+type NumericColorType = ColorType.fromRGB | ColorType.fromHSV | ColorType.new;
 
 function clearNaN(value: Readonly<ColorArray>) {
 	return value.map(value => value !== value ? 0 : value) as ColorArray;
@@ -30,13 +35,19 @@ export function roundColor(value: Readonly<ColorArray>) {
 /**
  * From a color to another color
  */
-export const colorTo: ExcludeSelfDoubleRecord<ColorType, (a: number, b: number, c: number) => ColorArray> = {
+export const colorTo: ExcludeSelfDoubleRecord<NumericColorType, (a: number, b: number, c: number) => ColorArray> & {
+	new: { fromHex: (a: number, b: number, c: number) => string };
+	fromHex: { new: (hex: string) => ColorArray };
+} = {
 	new: {
 		fromHSV: (...color) => {
 			return normalizeHsv(clearNaN(chroma(color.map(color => color * 255), 'rgb').hsv()));
 		},
 		fromRGB: (...color) => {
 			return color.map(color => Math.round(color * 255)) as ColorArray;
+		},
+		fromHex: (...color) => {
+			return chroma(color.map(color => color * 255), 'rgb').hex();
 		}
 	},
 	fromHSV: {
@@ -53,6 +64,12 @@ export const colorTo: ExcludeSelfDoubleRecord<ColorType, (a: number, b: number, 
 		},
 		new: (...color) => {
 			return color.map(color => color / 255) as ColorArray;
+		}
+	},
+	fromHex: {
+		new: hex => {
+			const normalized = hex.startsWith('#') ? hex : `#${hex}`;
+			return chroma(normalized).rgb(false).map(color => color / 255) as ColorArray;
 		}
 	}
 };
