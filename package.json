@@ -172,11 +172,13 @@
 					"enum": [
 						"fromRGB",
 						"fromHSV",
+						"fromHex",
 						"new"
 					],
 					"enumDescriptions": [
 						"Use Color3.fromRGB() as the default in the color picker",
 						"Use Color3.fromHSV() as the default in the color picker",
+						"Use Color3.fromHex() as the default in the color picker",
 						"Use new Color3() as the default in the color picker"
 					]
 				},
